@@ -3,4 +3,5 @@
 int main() {
   int n{100};
   boids::Flock flock;
+  flock.init(n);
 }

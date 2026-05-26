@@ -16,16 +16,23 @@ class Boid {
 
   Boid operator-(const Boid&);
 
-  double pos_squared() const;
 
-  double distance(Boid const&, Boid const&);
+  double distance(Boid const&);
+
+  std::array<double,2> distance_diff_array(Boid const&);
+
+  std::array<double,2> velocity_diff_array(Boid const&);
+
+  std::array<double,2> new_vel1(Flock &);
+  std::array<double,2> new_vel2(Flock &);
+  std::array<double,2> new_vel3(Flock &);
 
  public:
   Boid(std::array<double, 2>, std::array<double, 2>);
 
   Boid();
 
-  Boid update(Flock const& flock);
+  Boid update_boid(Flock const& flock);
 };
 
 class Flock {
@@ -34,11 +41,17 @@ class Flock {
  public:
    Boid operator[](int i) const;
 
-  void update();
+  void update_flock();
 
   int size() const;
 
   void push_back(Boid a);
+
+  void init(int);
+
+  std::vector<Boid>::iterator begin();
+
+  std::vector<Boid>::iterator end();
 };
 }  // namespace boids
 #endif
