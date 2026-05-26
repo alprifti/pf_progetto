@@ -1,5 +1,6 @@
-#include <class.hpp>
+#include "boids.hpp"
 
-main(){
-    std::vector<boids::Bird> flock{};
+int main() {
+  int n{100};
+  boids::Flock flock;
 }

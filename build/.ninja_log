@@ -1,0 +1,16 @@
+# ninja log v5
+0	46	1779802351561155414	build-RelWithDebInfo.ninja	7fa756371f8fe605
+0	46	1779802351561155414	build.ninja	7fa756371f8fe605
+0	46	1779802351561155414	CMakeFiles/impl-RelWithDebInfo.ninja	7fa756371f8fe605
+0	46	1779802351561155414	build-Release.ninja	7fa756371f8fe605
+0	46	1779802351561155414	CMakeFiles/impl-Release.ninja	7fa756371f8fe605
+0	46	1779802351561155414	build-Debug.ninja	7fa756371f8fe605
+0	46	1779802351561155414	CMakeFiles/impl-Debug.ninja	7fa756371f8fe605
+1	298	1779802783059964829	CMakeFiles/boidsim.t.dir/Debug/main.cpp.o	b76d98f0d32fc67b
+1	299	1779802783059964829	CMakeFiles/boidsim.dir/Debug/main.cpp.o	45506bdd58de493e
+299	396	1779802783156634037	Debug/boidsim.t	69fbaf4a44f052f6
+4	285	1779803249946876061	CMakeFiles/boidsim.dir/Debug/main.cpp.o	45506bdd58de493e
+4	285	1779803249946876061	CMakeFiles/boidsim.t.dir/Debug/main.cpp.o	b76d98f0d32fc67b
+285	376	1779803250037672954	Debug/boidsim.t	69fbaf4a44f052f6
+4	505	1779803250167579546	CMakeFiles/boidsim.dir/Debug/boids.cpp.o	7ddcf6b470d1e2a1
+505	670	1779803250327890790	Debug/boidsim	e83cbabd4e5f7d2c
