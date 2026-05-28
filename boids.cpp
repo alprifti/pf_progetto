@@ -7,10 +7,6 @@
 using namespace boids;
 
 double dt{};
-double s{};
-double d{};
-double a{};
-double c{};
 
 Boid Boid::operator+(const Boid& add) {
   return Boid{
@@ -47,7 +43,7 @@ std::array<double, 2> Boid::new_vel1(Flock& close) {
   for (auto it = close.begin(); it != close.end(); it++) {
     sum = sum_arr(sum, this->distance_diff_array(*it));
   }
-  return {-s * sum[1], -s * sum[2]};
+  return {-close.get_separation() * sum[1], -close.get_separation() * sum[2]};
 }
 
 std::array<double, 2> Boid::new_vel2(Flock& close) {
@@ -55,7 +51,8 @@ std::array<double, 2> Boid::new_vel2(Flock& close) {
   for (auto it = close.begin(); it != close.end(); it++) {
     sum = sum_arr(sum, this->velocity_diff_array(*it));
   }
-  return {a * (1 / (close.size() - 1)) * sum[1], -s * sum[2]};
+  return {close.get_alignment() * (1 / (close.size() - 1)) * sum[1],
+          -close.get_alignment() * (1 / (close.size() - 1)) * sum[2]};
 }
 
 std::array<double, 2> Boid::new_vel3(Flock& close) {
@@ -81,7 +78,7 @@ Boid::Boid() {
 Boid Boid::update_boid(Flock const& flock) {
   Flock close{};
   for (int it = 0; it != flock.size(); it++) {
-    if (this->distance(flock[it]) <= d) {
+    if (this->distance(flock[it]) <= close.get_dist()) {
       close.push_back(flock[it]);
     }
   }
@@ -108,6 +105,11 @@ void Flock::init(int n) {
     flock_.push_back(Boid{});
   }
 }
+
+double Flock::get_dist() { return dist_; }
+double Flock::get_separation() { return separation_; }
+double Flock::get_alignment() { return alignment_; }
+double Flock::get_coesion() { return coesion_; }
 
 std::vector<Boid>::iterator Flock::begin() { return flock_.begin(); }
 

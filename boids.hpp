@@ -37,6 +37,10 @@ class Boid {
 
 class Flock {
   std::vector<Boid> flock_;
+  double dist_{};
+  double separation_{};
+  double alignment_{};
+  double coesion_{};
 
  public:
   Boid operator[](int i) const;
@@ -48,6 +52,11 @@ class Flock {
   void push_back(Boid a);
 
   void init(int);
+
+  double get_dist();
+  double get_separation();
+  double get_alignment();
+  double get_coesion();
 
   std::vector<Boid>::iterator begin();
 
