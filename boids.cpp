@@ -4,12 +4,13 @@
 #include <cmath>
 #include <vector>
 
-namespace boids {
+using namespace boids;
 
 double dt{};
 double s{};
 double d{};
 double a{};
+double c{};
 
 Boid Boid::operator+(const Boid& add) {
   return Boid{
@@ -21,6 +22,11 @@ Boid Boid::operator-(const Boid& add) {
   return Boid{
       std::array<double, 2>{pos_[1] - add.pos_[1], pos_[2] - add.pos_[2]},
       std::array<double, 2>{vel_[1] - add.vel_[1], vel_[2] - add.vel_[2]}};
+}
+
+std::array<double, 2> sum_arr(std::array<double, 2> add1,
+                              std::array<double, 2> add2) {
+  return {add1[1] + add2[1], add1[2] + add2[2]};
 }
 
 double Boid::distance(Boid const& a) {
@@ -39,7 +45,7 @@ std::array<double, 2> Boid::velocity_diff_array(Boid const& a) {
 std::array<double, 2> Boid::new_vel1(Flock& close) {
   std::array<double, 2> sum;
   for (auto it = close.begin(); it != close.end(); it++) {
-    sum[1] += this->distance_diff_array(*it)[1];
+    sum = sum_arr(sum, this->distance_diff_array(*it));
   }
   return {-s * sum[1], -s * sum[2]};
 }
@@ -47,17 +53,20 @@ std::array<double, 2> Boid::new_vel1(Flock& close) {
 std::array<double, 2> Boid::new_vel2(Flock& close) {
   std::array<double, 2> sum;
   for (auto it = close.begin(); it != close.end(); it++) {
-    sum[1] += this->velocity_diff_array(*it)[1];
+    sum = sum_arr(sum, this->velocity_diff_array(*it));
   }
   return {a * (1 / (close.size() - 1)) * sum[1], -s * sum[2]};
 }
 
 std::array<double, 2> Boid::new_vel3(Flock& close) {
-  /*std::array<double, 2> sum;
+  std::array<double, 2> sum;
   for (auto it = close.begin(); it != close.end(); it++) {
-    sum[1] += this->velocity_diff_array(*it)[1];
+    sum[1] += pos_[1];
+    sum[2] += pos_[2];
   }
-  return {a * (1 / (close.size() - 1)) * sum[1], -s * sum[2]};*///da implementare correttamente
+  sum[1] = (1 / (close.size() - 1) * sum[1]);
+  sum[2] = (1 / (close.size() - 1) * sum[2]);
+  return {c * (sum[1]), c * sum[2]};
 }
 
 Boid::Boid(std::array<double, 2> pos, std::array<double, 2> vel) {
@@ -103,5 +112,3 @@ void Flock::init(int n) {
 std::vector<Boid>::iterator Flock::begin() { return flock_.begin(); }
 
 std::vector<Boid>::iterator Flock::end() { return flock_.end(); }
-
-}  // namespace boids

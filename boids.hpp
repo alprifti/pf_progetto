@@ -11,21 +11,21 @@ class Boid {
   std::array<double, 2> pos_ = {0., 0.};
   std::array<double, 2> vel_ = {0., 0.};
 
-
   Boid operator+(const Boid&);
 
   Boid operator-(const Boid&);
 
+  std::array<double, 2> sum_arr(std::array<double, 2>, std::array<double, 2>);
 
   double distance(Boid const&);
 
-  std::array<double,2> distance_diff_array(Boid const&);
+  std::array<double, 2> distance_diff_array(Boid const&);
 
-  std::array<double,2> velocity_diff_array(Boid const&);
+  std::array<double, 2> velocity_diff_array(Boid const&);
 
-  std::array<double,2> new_vel1(Flock &);
-  std::array<double,2> new_vel2(Flock &);
-  std::array<double,2> new_vel3(Flock &);
+  std::array<double, 2> new_vel1(Flock&);
+  std::array<double, 2> new_vel2(Flock&);
+  std::array<double, 2> new_vel3(Flock&);
 
  public:
   Boid(std::array<double, 2>, std::array<double, 2>);
@@ -39,7 +39,7 @@ class Flock {
   std::vector<Boid> flock_;
 
  public:
-   Boid operator[](int i) const;
+  Boid operator[](int i) const;
 
   void update_flock();
 
