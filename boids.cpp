@@ -45,7 +45,7 @@ std::array<double, 2> Boid::new_vel1(Flock& close) {
   for (auto it = close.flock_.begin(); it != close.flock_.end(); it++) {
     sum = sum_arr(sum, this->distance_diff_array(*it));
   }
-  return {-close.separation_ * sum[0], -close.separation_ * sum[2]};
+  return {-close.separation_ * sum[0], -close.separation_ * sum[1]};
 }
 
 std::array<double, 2> Boid::new_vel2(Flock& close) {
@@ -135,6 +135,7 @@ long unsigned int Flock::size() const { return flock_.size(); }
 void Flock::push_back(Boid a) { flock_.push_back(a); }
 
 void Flock::init(long unsigned int n) {
+  flock_.clear();
   std::random_device rd;
   std::default_random_engine eng;
   std::uniform_real_distribution<double> x_distribution(0.0, 800.0);
