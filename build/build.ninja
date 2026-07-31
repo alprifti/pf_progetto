@@ -65,9 +65,9 @@ build NightlyTest: phony NightlyTest$:Debug
 
 build NightlyUpdate: phony NightlyUpdate$:Debug
 
-build boidsim: phony Debug/boidsim
+build progetto: phony Debug/progetto
 
-build boidsim.t: phony Debug/boidsim.t
+build progetto.t: phony Debug/progetto.t
 
 
 #############################################

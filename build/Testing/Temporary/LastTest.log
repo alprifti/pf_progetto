@@ -1,0 +1,32 @@
+Start testing: Jul 31 17:45 CEST
+----------------------------------------------------------
+1/1 Testing: progetto.t
+1/1 Test: progetto.t
+Command: "/home/alessio/pf_progetto/build/Debug/progetto.t"
+Directory: /home/alessio/pf_progetto/build
+"progetto.t" start time: Jul 31 17:45 CEST
+Output:
+----------------------------------------------------------
+/usr/include/c++/13/array:202: constexpr std::array<_Tp, _Nm>::value_type& std::array<_Tp, _Nm>::operator[](size_type) [with _Tp = double; long unsigned int _Nm = 2; reference = double&; size_type = long unsigned int]: Assertion '__n < this->size()' failed.
+[doctest] doctest version is "2.5.2"
+[doctest] run with "--help" for options
+===============================================================================
+/home/alessio/pf_progetto/test.cpp:62:
+TEST SUITE: Simulation Logic & Edge Cases
+TEST CASE:  Updating flock size consistency
+
+/home/alessio/pf_progetto/test.cpp:62: FATAL ERROR: test case CRASHED: SIGABRT - Abort (abnormal termination) signal
+
+===============================================================================
+[doctest] test cases:  7 |  6 passed | 1 failed | 6 skipped
+[doctest] assertions: 10 | 10 passed | 0 failed |
+[doctest] Status: FAILURE!
+<end of output>
+Test time =   0.26 sec
+----------------------------------------------------------
+Test Failed.
+"progetto.t" end time: Jul 31 17:45 CEST
+"progetto.t" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Jul 31 17:45 CEST

@@ -33,30 +33,32 @@ class Boid {
   Boid();
 
   Boid update_boid(Flock const& flock);
+
+  double orientation();
+  double getPosX();
+  double getPosY();
 };
 
 class Flock {
+  friend Boid;
+
   std::vector<Boid> flock_;
-  double dist_{};
-  double separation_{};
-  double alignment_{};
-  double coesion_{};
+  static double dist_;
+  static double separation_;
+  static double alignment_;
+  static double coesion_;
+  static double dt_;
 
  public:
-  Boid operator[](int i) const;
+  Boid operator[](long unsigned int i) const;
 
   void update_flock();
 
-  int size() const;
+  long unsigned int size() const;
 
   void push_back(Boid a);
 
-  void init(int);
-
-  double get_dist();
-  double get_separation();
-  double get_alignment();
-  double get_coesion();
+  void init(long unsigned int);
 
   std::vector<Boid>::iterator begin();
 

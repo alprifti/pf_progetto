@@ -203,76 +203,83 @@ build ContinuousMemCheck$:RelWithDebInfo: phony CMakeFiles/ContinuousMemCheck-Re
 build ContinuousSubmit$:RelWithDebInfo: phony CMakeFiles/ContinuousSubmit-RelWithDebInfo
 
 # =============================================================================
-# Object build statements for EXECUTABLE target boidsim
+# Object build statements for EXECUTABLE target progetto
 
 
 #############################################
-# Order-only phony target for boidsim
+# Order-only phony target for progetto
 
-build cmake_object_order_depends_target_boidsim_RELWITHDEBINFO: phony || CMakeFiles/boidsim.dir
+build cmake_object_order_depends_target_progetto_RELWITHDEBINFO: phony || CMakeFiles/progetto.dir
 
-build CMakeFiles/boidsim.dir/RelWithDebInfo/main.cpp.o: CXX_COMPILER__boidsim_unscanned_RelWithDebInfo /home/alessio/pf_progetto/main.cpp || cmake_object_order_depends_target_boidsim_RELWITHDEBINFO
+build CMakeFiles/progetto.dir/RelWithDebInfo/main.cpp.o: CXX_COMPILER__progetto_unscanned_RelWithDebInfo /home/alessio/pf_progetto/main.cpp || cmake_object_order_depends_target_progetto_RELWITHDEBINFO
   DEFINES = -DCMAKE_INTDIR=\"RelWithDebInfo\"
-  DEP_FILE = CMakeFiles/boidsim.dir/RelWithDebInfo/main.cpp.o.d
+  DEP_FILE = CMakeFiles/progetto.dir/RelWithDebInfo/main.cpp.o.d
   FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -O2 -g -DNDEBUG -std=c++20
-  OBJECT_DIR = CMakeFiles/boidsim.dir/RelWithDebInfo
-  OBJECT_FILE_DIR = CMakeFiles/boidsim.dir/RelWithDebInfo
+  OBJECT_DIR = CMakeFiles/progetto.dir/RelWithDebInfo
+  OBJECT_FILE_DIR = CMakeFiles/progetto.dir/RelWithDebInfo
 
-build CMakeFiles/boidsim.dir/RelWithDebInfo/boids.cpp.o: CXX_COMPILER__boidsim_unscanned_RelWithDebInfo /home/alessio/pf_progetto/boids.cpp || cmake_object_order_depends_target_boidsim_RELWITHDEBINFO
+build CMakeFiles/progetto.dir/RelWithDebInfo/boids.cpp.o: CXX_COMPILER__progetto_unscanned_RelWithDebInfo /home/alessio/pf_progetto/boids.cpp || cmake_object_order_depends_target_progetto_RELWITHDEBINFO
   DEFINES = -DCMAKE_INTDIR=\"RelWithDebInfo\"
-  DEP_FILE = CMakeFiles/boidsim.dir/RelWithDebInfo/boids.cpp.o.d
+  DEP_FILE = CMakeFiles/progetto.dir/RelWithDebInfo/boids.cpp.o.d
   FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -O2 -g -DNDEBUG -std=c++20
-  OBJECT_DIR = CMakeFiles/boidsim.dir/RelWithDebInfo
-  OBJECT_FILE_DIR = CMakeFiles/boidsim.dir/RelWithDebInfo
+  OBJECT_DIR = CMakeFiles/progetto.dir/RelWithDebInfo
+  OBJECT_FILE_DIR = CMakeFiles/progetto.dir/RelWithDebInfo
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target boidsim
+# Link build statements for EXECUTABLE target progetto
 
 
 #############################################
-# Link the executable RelWithDebInfo/boidsim
+# Link the executable RelWithDebInfo/progetto
 
-build RelWithDebInfo/boidsim: CXX_EXECUTABLE_LINKER__boidsim_RelWithDebInfo CMakeFiles/boidsim.dir/RelWithDebInfo/main.cpp.o CMakeFiles/boidsim.dir/RelWithDebInfo/boids.cpp.o | /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.6.1 /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.6.1 /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.6.1
+build RelWithDebInfo/progetto: CXX_EXECUTABLE_LINKER__progetto_RelWithDebInfo CMakeFiles/progetto.dir/RelWithDebInfo/main.cpp.o CMakeFiles/progetto.dir/RelWithDebInfo/boids.cpp.o | /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.6.1 /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.6.1 /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.6.1
   FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -O2 -g -DNDEBUG
   LINK_LIBRARIES = /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.6.1  /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.6.1  /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.6.1
-  OBJECT_DIR = CMakeFiles/boidsim.dir/RelWithDebInfo
+  OBJECT_DIR = CMakeFiles/progetto.dir/RelWithDebInfo
   POST_BUILD = :
   PRE_LINK = :
-  TARGET_FILE = RelWithDebInfo/boidsim
-  TARGET_PDB = boidsim.dbg
+  TARGET_FILE = RelWithDebInfo/progetto
+  TARGET_PDB = progetto.dbg
 
 # =============================================================================
-# Object build statements for EXECUTABLE target boidsim.t
+# Object build statements for EXECUTABLE target progetto.t
 
 
 #############################################
-# Order-only phony target for boidsim.t
+# Order-only phony target for progetto.t
 
-build cmake_object_order_depends_target_boidsim.t_RELWITHDEBINFO: phony || CMakeFiles/boidsim.t.dir
+build cmake_object_order_depends_target_progetto.t_RELWITHDEBINFO: phony || CMakeFiles/progetto.t.dir
 
-build CMakeFiles/boidsim.t.dir/RelWithDebInfo/main.cpp.o: CXX_COMPILER__boidsim.2et_unscanned_RelWithDebInfo /home/alessio/pf_progetto/main.cpp || cmake_object_order_depends_target_boidsim.t_RELWITHDEBINFO
+build CMakeFiles/progetto.t.dir/RelWithDebInfo/test.cpp.o: CXX_COMPILER__progetto.2et_unscanned_RelWithDebInfo /home/alessio/pf_progetto/test.cpp || cmake_object_order_depends_target_progetto.t_RELWITHDEBINFO
   DEFINES = -DCMAKE_INTDIR=\"RelWithDebInfo\"
-  DEP_FILE = CMakeFiles/boidsim.t.dir/RelWithDebInfo/main.cpp.o.d
+  DEP_FILE = CMakeFiles/progetto.t.dir/RelWithDebInfo/test.cpp.o.d
   FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -O2 -g -DNDEBUG -std=c++20
-  OBJECT_DIR = CMakeFiles/boidsim.t.dir/RelWithDebInfo
-  OBJECT_FILE_DIR = CMakeFiles/boidsim.t.dir/RelWithDebInfo
+  OBJECT_DIR = CMakeFiles/progetto.t.dir/RelWithDebInfo
+  OBJECT_FILE_DIR = CMakeFiles/progetto.t.dir/RelWithDebInfo
+
+build CMakeFiles/progetto.t.dir/RelWithDebInfo/boids.cpp.o: CXX_COMPILER__progetto.2et_unscanned_RelWithDebInfo /home/alessio/pf_progetto/boids.cpp || cmake_object_order_depends_target_progetto.t_RELWITHDEBINFO
+  DEFINES = -DCMAKE_INTDIR=\"RelWithDebInfo\"
+  DEP_FILE = CMakeFiles/progetto.t.dir/RelWithDebInfo/boids.cpp.o.d
+  FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -O2 -g -DNDEBUG -std=c++20
+  OBJECT_DIR = CMakeFiles/progetto.t.dir/RelWithDebInfo
+  OBJECT_FILE_DIR = CMakeFiles/progetto.t.dir/RelWithDebInfo
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target boidsim.t
+# Link build statements for EXECUTABLE target progetto.t
 
 
 #############################################
-# Link the executable RelWithDebInfo/boidsim.t
+# Link the executable RelWithDebInfo/progetto.t
 
-build RelWithDebInfo/boidsim.t: CXX_EXECUTABLE_LINKER__boidsim.2et_RelWithDebInfo CMakeFiles/boidsim.t.dir/RelWithDebInfo/main.cpp.o
+build RelWithDebInfo/progetto.t: CXX_EXECUTABLE_LINKER__progetto.2et_RelWithDebInfo CMakeFiles/progetto.t.dir/RelWithDebInfo/test.cpp.o CMakeFiles/progetto.t.dir/RelWithDebInfo/boids.cpp.o
   FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -O2 -g -DNDEBUG
-  OBJECT_DIR = CMakeFiles/boidsim.t.dir/RelWithDebInfo
+  OBJECT_DIR = CMakeFiles/progetto.t.dir/RelWithDebInfo
   POST_BUILD = :
   PRE_LINK = :
-  TARGET_FILE = RelWithDebInfo/boidsim.t
-  TARGET_PDB = boidsim.t.dbg
+  TARGET_FILE = RelWithDebInfo/progetto.t
+  TARGET_PDB = progetto.t.dbg
 
 
 #############################################
@@ -498,15 +505,15 @@ build CMakeFiles/ContinuousSubmit-RelWithDebInfo | ${cmake_ninja_workdir}CMakeFi
   COMMAND = cd /home/alessio/pf_progetto/build && /usr/bin/ctest -C RelWithDebInfo -D ContinuousSubmit
   pool = console
 
-build boidsim.t$:RelWithDebInfo: phony RelWithDebInfo/boidsim.t
+build progetto.t$:RelWithDebInfo: phony RelWithDebInfo/progetto.t
 
-build boidsim$:RelWithDebInfo: phony RelWithDebInfo/boidsim
+build progetto$:RelWithDebInfo: phony RelWithDebInfo/progetto
 
 
 #############################################
 # Folder: /home/alessio/pf_progetto/build
 
-build all$:RelWithDebInfo: phony RelWithDebInfo/boidsim RelWithDebInfo/boidsim.t
+build all$:RelWithDebInfo: phony RelWithDebInfo/progetto RelWithDebInfo/progetto.t
 
 
 #############################################

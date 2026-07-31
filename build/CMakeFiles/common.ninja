@@ -120,19 +120,19 @@ build CMakeFiles/cmake_byproducts_for_clean_target: phony Experimental$:Debug CM
 #############################################
 # Clean byproducts.
 
-build CMakeFiles/cmake_byproducts_for_clean_target$:Debug: phony Debug/boidsim Debug/boidsim.t
+build CMakeFiles/cmake_byproducts_for_clean_target$:Debug: phony Debug/progetto Debug/progetto.t
 
 
 #############################################
 # Clean byproducts.
 
-build CMakeFiles/cmake_byproducts_for_clean_target$:Release: phony Release/boidsim Release/boidsim.t
+build CMakeFiles/cmake_byproducts_for_clean_target$:Release: phony Release/progetto Release/progetto.t
 
 
 #############################################
 # Clean byproducts.
 
-build CMakeFiles/cmake_byproducts_for_clean_target$:RelWithDebInfo: phony RelWithDebInfo/boidsim RelWithDebInfo/boidsim.t
+build CMakeFiles/cmake_byproducts_for_clean_target$:RelWithDebInfo: phony RelWithDebInfo/progetto RelWithDebInfo/progetto.t
 
 
 #############################################

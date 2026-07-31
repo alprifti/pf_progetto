@@ -26,8 +26,8 @@
 /home/alessio/pf_progetto/build/CMakeFiles/ContinuousCoverage.dir
 /home/alessio/pf_progetto/build/CMakeFiles/ContinuousMemCheck.dir
 /home/alessio/pf_progetto/build/CMakeFiles/ContinuousSubmit.dir
-/home/alessio/pf_progetto/build/CMakeFiles/boidsim.dir
-/home/alessio/pf_progetto/build/CMakeFiles/boidsim.t.dir
+/home/alessio/pf_progetto/build/CMakeFiles/progetto.dir
+/home/alessio/pf_progetto/build/CMakeFiles/progetto.t.dir
 /home/alessio/pf_progetto/build/CMakeFiles/test.dir
 /home/alessio/pf_progetto/build/CMakeFiles/edit_cache.dir
 /home/alessio/pf_progetto/build/CMakeFiles/rebuild_cache.dir

@@ -64,9 +64,9 @@ build NightlyTest: phony NightlyTest$:Release
 
 build NightlyUpdate: phony NightlyUpdate$:Release
 
-build boidsim: phony Release/boidsim
+build progetto: phony Release/progetto
 
-build boidsim.t: phony Release/boidsim.t
+build progetto.t: phony Release/progetto.t
 
 
 #############################################

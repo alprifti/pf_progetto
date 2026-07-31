@@ -64,9 +64,9 @@ build NightlyTest: phony NightlyTest$:RelWithDebInfo
 
 build NightlyUpdate: phony NightlyUpdate$:RelWithDebInfo
 
-build boidsim: phony RelWithDebInfo/boidsim
+build progetto: phony RelWithDebInfo/progetto
 
-build boidsim.t: phony RelWithDebInfo/boidsim.t
+build progetto.t: phony RelWithDebInfo/progetto.t
 
 
 #############################################
