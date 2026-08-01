@@ -17,7 +17,7 @@ int main() {
   // fill vector with triangles
   std::vector<sf::CircleShape> triangles;
   for (long unsigned int i{}; i < flock.size(); i++) {
-    triangles.push_back(sf::CircleShape());
+    triangles.push_back(sf::CircleShape(5.f,3));
     triangles[i].setFillColor(sf::Color::Green);
   }
 
