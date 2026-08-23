@@ -1,6 +1,7 @@
 #ifndef BOIDS_HPP
 #define BOIDS_HPP
 #include <array>
+#include <fstream>
 #include <vector>
 
 namespace boids {
@@ -8,50 +9,60 @@ namespace boids {
 class Flock;
 
 class Boid {
+  friend Flock;
   std::array<double, 2> pos_ = {0., 0.};
   std::array<double, 2> vel_ = {0., 0.};
 
-  Boid operator+(const Boid&);
+  std::array<double, 2> sum_arr(std::array<double, 2> const&,
+                                std::array<double, 2> const&) const;
 
-  Boid operator-(const Boid&);
+  double distance(Boid const&) const;
+  double distance(std::array<double, 2> const& arr) const;
 
-  std::array<double, 2> sum_arr(std::array<double, 2>, std::array<double, 2>);
+  std::array<double, 2> distance_diff_array(Boid const&) const;
 
-  double distance(Boid const&);
+  std::array<double, 2> velocity_diff_array(Boid const&) const;
 
-  std::array<double, 2> distance_diff_array(Boid const&);
+  std::array<double, 2> separation(std::vector<const Boid*> const&);
+  std::array<double, 2> alignment(std::vector<const Boid*> const&);
+  std::array<double, 2> coesion(std::vector<const Boid*> const&);
 
-  std::array<double, 2> velocity_diff_array(Boid const&);
+  void clamp_speed();
 
-  std::array<double, 2> new_vel1(Flock&);
-  std::array<double, 2> new_vel2(Flock&);
-  std::array<double, 2> new_vel3(Flock&);
+  void wrap_borders();
+
+  Boid update_boid(Flock const& flock);
 
  public:
   Boid(std::array<double, 2>, std::array<double, 2>);
 
   Boid();
 
-  Boid update_boid(Flock const& flock);
-
-  double orientation();
-  double getPosX();
-  double getPosY();
+  double orientation() const;
+  double getPosX() const;
+  double getPosY() const;
 };
 
 class Flock {
   friend Boid;
 
   std::vector<Boid> flock_;
+  static double max_speed_;
+  static double min_speed_;
   static double dist_;
-  static double separation_;
-  static double alignment_;
-  static double coesion_;
+  static double d_s_;
+  static double s_;
+  static double a_;
+  static double c_;
   static double dt_;
 
  public:
-  Boid operator[](long unsigned int i) const;
+  Flock();
+  Flock(long unsigned int);
 
+  const Boid& operator[](long unsigned int i) const;
+
+  // Updates positions and velocities of the boids in the flock
   void update_flock();
 
   long unsigned int size() const;
@@ -60,9 +71,13 @@ class Flock {
 
   void init(long unsigned int);
 
-  std::vector<Boid>::iterator begin();
+  void flight_parameters(std::ifstream&);
 
-  std::vector<Boid>::iterator end();
+  // returns a const_iterator
+  std::vector<Boid>::const_iterator begin() const;
+
+  // returns a const_iterator
+  std::vector<Boid>::const_iterator end() const;
 };
 }  // namespace boids
 #endif
