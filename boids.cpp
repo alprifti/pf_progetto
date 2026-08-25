@@ -19,6 +19,36 @@ std::array<double, 2> Boid::sum_arr(std::array<double, 2> const& add1,
   return {add1[0] + add2[0], add1[1] + add2[1]};
 }
 
+double Boid::true_distance(Boid const& a) const {
+  auto check_min_dist = [&](double width, double height, double current_min) {
+    double distance{this->distance({a.pos_[0] + width, a.pos_[1] + height})};
+    current_min= std::min(distance,current_min);
+    assert(current_min<=distance);
+    assert(current_min>0);
+    return current_min;
+    /*if (current_min > distance) {
+      assert(current_min<=distance);
+    assert(current_min>0);
+      return distance;
+    } else {
+      return current_min;
+      assert(current_min<=distance);
+    assert(current_min>0);
+    }*/
+    
+  };
+  double min_dist{this->distance(a)};
+  min_dist = check_min_dist(-800, -600, min_dist);
+  min_dist = check_min_dist(-800, +600, min_dist);
+  min_dist = check_min_dist(800, -600, min_dist);
+  min_dist = check_min_dist(800, 600, min_dist);
+  min_dist = check_min_dist(-800, 0, min_dist);
+  min_dist = check_min_dist(0, -600, min_dist);
+  min_dist = check_min_dist(+800, 0, min_dist);
+  min_dist = check_min_dist(0, +600, min_dist);
+  return min_dist;
+}
+
 double Boid::distance(Boid const& a) const {
   return {std::sqrt((pos_[0] - a.pos_[0]) * (pos_[0] - a.pos_[0]) +
                     (pos_[1] - a.pos_[1]) * (pos_[1] - a.pos_[1]))};
@@ -27,6 +57,10 @@ double Boid::distance(Boid const& a) const {
 double Boid::distance(std::array<double, 2> const& arr) const {
   return {std::sqrt((pos_[0] - arr[0]) * (pos_[0] - arr[0]) +
                     (pos_[1] - arr[1]) * (pos_[1] - arr[1]))};
+}
+
+double Boid::velocity() const {
+  return {std::sqrt(vel_[0] * vel_[0] + vel_[1] * vel_[1])};
 }
 
 std::array<double, 2> Boid::distance_diff_array(Boid const& a) const {
@@ -134,7 +168,7 @@ Boid Boid::update_boid(Flock const& flock) {
 
 double Boid::orientation() const {
   if (vel_[0] == 0 && vel_[1] == 0) {
-    return 0;
+    return 0 + M_PI;
   }
   return std::atan2(vel_[1], vel_[0]);
 };
@@ -157,8 +191,8 @@ void Boid::clamp_speed() {
   } else {
     vel_[0] = Flock::min_speed_;
   }
-  velocity =std::sqrt(vel_[0] * vel_[0] + vel_[1] * vel_[1]);
-  assert(velocity > Flock::min_speed_ - 0.1);
+  assert(std::sqrt(vel_[0] * vel_[0] + vel_[1] * vel_[1]) >
+         Flock::min_speed_ - 0.1);
   assert(std::sqrt(vel_[0] * vel_[0] + vel_[1] * vel_[1]) <
          Flock::max_speed_ + 0.1);
 }
@@ -189,7 +223,6 @@ void Boid::wrap_borders() {
 
 //
 // Flock member functions
-
 
 double Flock::max_speed_{100.0};
 double Flock::min_speed_{40.0};
@@ -315,3 +348,127 @@ std::vector<Boid>::const_iterator Flock::begin() const {
 }
 
 std::vector<Boid>::const_iterator Flock::end() const { return flock_.cend(); }
+
+// returns an array with {mean_distance, distance_stdev, mean_velocity,
+// velocity_stdev}
+std::array<double, 4> Flock::flock_statistics() const {
+  std::vector<double> mean_distance_vector{};
+  double mean_distance{};
+  std::vector<double> velocity_vector{};
+  double mean_velocity{};
+  std::vector<double> square_deviation{};
+  double n{static_cast<double>(flock_.size())};
+
+  // calculates the mean_distance and mean_velocity
+  for (const Boid& i : flock_) {
+    double sum_dist{};
+
+    // calculates the mean distance between a boid and every other boid (except
+    // itself)
+    for (const Boid& j : flock_) {
+      if (&i != &j) {
+        sum_dist += i.true_distance(j);
+      }
+    }
+    sum_dist /= n - 1.0;
+    mean_distance_vector.push_back(sum_dist);
+    mean_distance += sum_dist;
+
+    double velocity{i.velocity()};
+    velocity_vector.push_back(velocity);
+    mean_velocity += velocity;
+  }
+  mean_velocity /= n;
+  mean_distance /= n;
+
+  double distance_stdev{};
+  double velocity_stdev{};
+
+  // reuses mean_distance_vector and velocity_vector to calculate the sqaure
+  // deviation
+  /*for (long unsigned int i = 0; i < flock_.size(); i++) {
+    mean_distance_vector[i] = (mean_distance_vector[i] - mean_distance) *
+                              (mean_distance_vector[i] - mean_distance);
+    distance_stdev += mean_distance_vector[i];
+
+    velocity_vector[i] = (velocity_vector[i] - mean_velocity) *
+                         (velocity_vector[i] - mean_velocity);
+    velocity_stdev += velocity_vector[i];
+  }
+  distance_stdev /= n - 1.0;
+  velocity_stdev /= n - 1.0;*/
+
+  double distance_variance_sum = 0.0;
+  double velocity_variance_sum = 0.0;
+  long unsigned int n_int{flock_.size()};
+
+  for (std::size_t i = 0; i < n_int; ++i) {
+    double diff_dist = mean_distance_vector[i] - mean_distance;
+    distance_variance_sum += diff_dist * diff_dist;
+
+    double diff_vel = velocity_vector[i] - mean_velocity;
+    velocity_variance_sum += diff_vel * diff_vel;
+  }
+
+  distance_stdev = std::sqrt(distance_variance_sum / (n - 1.0));
+  velocity_stdev = std::sqrt(velocity_variance_sum / (n - 1.0));
+
+  return {mean_distance, distance_stdev, mean_velocity, velocity_stdev};
+}
+
+double Flock::get_dt() const { return dt_; }
+
+/*std::array<double, 4> Flock::flock_statistics() const {
+  const std::size_t n = flock_.size();
+  if (n <= 1) {
+    // Handle edge case where statistics cannot be meaningfully computed
+    return {0.0, 0.0, 0.0, 0.0};
+  }
+
+  const double n_double = static_cast<double>(n);
+
+  // 1. Calculate mean distance per boid and mean velocity
+  std::vector<double> mean_distances;
+  mean_distances.reserve(n);
+
+  double total_mean_distance = 0.0;
+  double total_mean_velocity = 0.0;
+
+  for (const Boid& i : flock_) {
+    double sum_dist = 0.0;
+    for (const Boid& j : flock_) {
+      if (&i != &j) {
+        sum_dist += i.distance(j);
+      }
+    }
+    // Correctly average over n - 1 other boids
+    double mean_dist = sum_dist / (n_double - 1.0);
+    mean_distances.push_back(mean_dist);
+    total_mean_distance += mean_dist;
+
+    total_mean_velocity += i.velocity();
+  }
+
+  total_mean_distance /= n_double;
+  total_mean_velocity /= n_double;
+
+  // 2. Calculate standard deviations
+  double distance_variance_sum = 0.0;
+  double velocity_variance_sum = 0.0;
+
+  for (std::size_t i = 0; i < n; ++i) {
+    double diff_dist = mean_distances[i] - total_mean_distance;
+    distance_variance_sum += diff_dist * diff_dist;
+
+    double vel = flock_[i].velocity();
+    double diff_vel = vel - total_mean_velocity;
+    velocity_variance_sum += diff_vel * diff_vel;
+  }
+
+  // Sample standard deviation (Bessel's correction: N - 1)
+  double distance_stdev = std::sqrt(distance_variance_sum / (n_double - 1.0));
+  double velocity_stdev = std::sqrt(velocity_variance_sum / (n_double - 1.0));
+
+  return {total_mean_distance, distance_stdev, total_mean_velocity,
+velocity_stdev};
+}*/

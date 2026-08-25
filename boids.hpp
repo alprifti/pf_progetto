@@ -18,6 +18,9 @@ class Boid {
 
   double distance(Boid const&) const;
   double distance(std::array<double, 2> const& arr) const;
+  double true_distance(Boid const& a) const;
+
+  double velocity() const;
 
   std::array<double, 2> distance_diff_array(Boid const&) const;
 
@@ -78,6 +81,12 @@ class Flock {
 
   // returns a const_iterator
   std::vector<Boid>::const_iterator end() const;
+
+  // returns an array with {mean_distance, distance_stdev, mean_velocity,
+  // velocity_stdev}
+  std::array<double, 4> flock_statistics() const;
+
+  double get_dt() const;
 };
 }  // namespace boids
 #endif
