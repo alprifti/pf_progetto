@@ -28,7 +28,7 @@ class Boid {
 
   std::array<double, 2> separation(std::vector<const Boid*> const&);
   std::array<double, 2> alignment(std::vector<const Boid*> const&);
-  std::array<double, 2> coesion(std::vector<const Boid*> const&);
+  std::array<double, 2> cohesion(std::vector<const Boid*> const&);
 
   void clamp_speed();
 

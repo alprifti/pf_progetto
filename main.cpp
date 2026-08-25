@@ -13,9 +13,9 @@
 int main() {
   try {
     long unsigned int n{};
-    std::cout << "Insert number of boids [1,1000]" << std::endl;
+    std::cout << "Insert number of boids [1,500]" << std::endl;
     std::cin >> n;
-    if (n < 1 || n > 1000) {
+    if (n < 1 || n > 500) {
       std::cout << "Wrong number of boids, terminating program" << std::endl;
       return EXIT_FAILURE;
     }

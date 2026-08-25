@@ -22,12 +22,11 @@ std::array<double, 2> Boid::sum_arr(std::array<double, 2> const& add1,
 double Boid::true_distance(Boid const& a) const {
   auto check_min_dist = [&](double width, double height, double current_min) {
     double distance{this->distance({a.pos_[0] + width, a.pos_[1] + height})};
-    current_min= std::min(distance,current_min);
-    assert(current_min<=distance);
-    assert(current_min!=0);
+    current_min = std::min(distance, current_min);
+    assert(current_min <= distance);
     return current_min;
-    
   };
+
   double min_dist{this->distance(a)};
   min_dist = check_min_dist(-800, -600, min_dist);
   min_dist = check_min_dist(-800, +600, min_dist);
@@ -79,25 +78,26 @@ std::array<double, 2> Boid::separation(std::vector<const Boid*> const& close) {
 std::array<double, 2> Boid::alignment(std::vector<const Boid*> const& close) {
   std::array<double, 2> sum{};
   const long unsigned int n{close.size()};
+  if (n == 0) {
+    return {0.0, 0.0};
+  }
 
   for (auto it = close.begin(); it != close.end(); it++) {
     sum = sum_arr(sum, this->velocity_diff_array(**it));
-  }
-  if (n <= 1) {
-    return {0.0, 0.0};
   }
   const double num{1.0 / static_cast<double>(n)};
   return {Flock::a_ * num * sum[0], Flock::a_ * num * sum[1]};
 }
 
-std::array<double, 2> Boid::coesion(std::vector<const Boid*> const& close) {
+std::array<double, 2> Boid::cohesion(std::vector<const Boid*> const& close) {
   std::array<double, 2> sum{};
   const long unsigned int n{close.size()};
+  if (n == 0) {
+    return {0.0, 0.0};
+  }
 
   for (auto it = close.begin(); it != close.end(); it++) {
     sum = sum_arr(sum, (**it).pos_);
-    /*sum[0] += pos_[0];
-    sum[1] += pos_[1];*/
   }
 
   const double num{1.0 / static_cast<double>(n)};
@@ -140,7 +140,7 @@ Boid Boid::update_boid(Flock const& flock) {
   }
   std::array<double, 2> new_vel1{this->separation(separation)};
   std::array<double, 2> new_vel2{this->alignment(near)};
-  std::array<double, 2> new_vel3{this->coesion(near)};
+  std::array<double, 2> new_vel3{this->cohesion(near)};
   vel_[0] = vel_[0] + new_vel1[0] + new_vel2[0] + new_vel3[0];
   vel_[1] = vel_[1] + new_vel1[1] + new_vel2[1] + new_vel3[1];
 
@@ -180,7 +180,13 @@ void Boid::clamp_speed() {
       vel_[1] *= scale;
     }
   } else {
-    vel_[0] = Flock::min_speed_;
+    std::random_device rd;
+    std::default_random_engine eng(rd());
+    std::uniform_real_distribution<double> velocity_distribution(
+        Flock::min_speed_, Flock::max_speed_);
+    std::uniform_real_distribution<double> orientation(0.0, 2.0 * M_PI);
+    vel_[0] = velocity_distribution(eng) * std::cos(orientation(eng));
+    vel_[1] = velocity_distribution(eng) * std::sin(orientation(eng));
   }
   assert(std::sqrt(vel_[0] * vel_[0] + vel_[1] * vel_[1]) >
          Flock::min_speed_ - 0.1);
@@ -206,7 +212,7 @@ void Boid::wrap_borders() {
   } else if (pos_[1] < 0) {
     pos_[1] += 600;
   } else if (pos_[0] > 800) {
-    pos_[1] -= 800;
+    pos_[0] -= 800;
   } else if (pos_[1] > 600) {
     pos_[1] -= 600;
   }
@@ -264,7 +270,7 @@ void Flock::init(long unsigned int n) {
   std::uniform_real_distribution<double> y_distribution(0.0, 600.0);
   std::uniform_real_distribution<double> velocity_distribution(
       Flock::min_speed_, Flock::max_speed_);
-  std::uniform_real_distribution<double> orientation(0.0, 360);
+  std::uniform_real_distribution<double> orientation(0.0, 2.0 * M_PI);
   for (long unsigned int i = 0; i != n; i++) {
     flock_.push_back(
         Boid{{x_distribution(eng), y_distribution(eng)},
@@ -354,8 +360,8 @@ std::array<double, 4> Flock::flock_statistics() const {
   for (const Boid& i : flock_) {
     double sum_dist{};
 
-    // calculates the mean distance between a boid and every other boid (except
-    // itself)
+    // calculates the mean distance between a boid and every other boid
+    // (except itself)
     for (const Boid& j : flock_) {
       if (&i != &j) {
         sum_dist += i.true_distance(j);
@@ -379,7 +385,7 @@ std::array<double, 4> Flock::flock_statistics() const {
   double velocity_variance_sum = 0.0;
   long unsigned int n_int{flock_.size()};
 
-  //calculates the standard deviation of distanca and speed
+  // calculates the standard deviation of distanca and speed
   for (std::size_t i = 0; i < n_int; ++i) {
     double diff_dist = mean_distance_vector[i] - mean_distance;
     distance_variance_sum += diff_dist * diff_dist;
