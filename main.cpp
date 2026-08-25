@@ -21,7 +21,13 @@ int main() {
     }
     boids::Flock flock{};
 
-    std::ifstream is{"config"};
+    //take input stream of parameters and initialize flock
+    std::string path{"config/"};
+    std::string file_name{};
+    std::cout<<"Insert configuration file name"<<std::endl;
+    std::cin >>file_name;
+    path+=file_name;
+    std::ifstream is{path};
     if (!(is.is_open())) {
       throw std::runtime_error{"Failure to open configuration file"};
     }
