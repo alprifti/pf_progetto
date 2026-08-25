@@ -159,7 +159,7 @@ Boid Boid::update_boid(Flock const& flock) {
 
 double Boid::orientation() const {
   if (vel_[0] == 0 && vel_[1] == 0) {
-    return 0 + M_PI;
+    return 0;
   }
   return std::atan2(vel_[1], vel_[0]);
 };
