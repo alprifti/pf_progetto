@@ -6,12 +6,12 @@
 #include <iostream>
 #include <optional>
 #include <vector>
+#include <cmath>
 
 #include "boids.hpp"
 
 int main() {
   try {
-    constexpr float pi = 3.141592;
     long unsigned int n{};
     std::cout << "Insert number of boids [1,1000]" << std::endl;
     std::cin >> n;
@@ -27,6 +27,7 @@ int main() {
       std::cout << "Failure to open configuration file" << std::endl;
     }
     flock.flight_parameters(is);
+    is.close();
     flock.init(n);
 
     // fill vector with triangles
@@ -37,12 +38,6 @@ int main() {
       triangles[i].setOrigin(8.f, 8.f);
       triangles[i].setScale(0.5, 1.f);
     }
-
-    /*sf::CircleShape test(100.f, 4);
-    test.setFillColor(sf::Color::Green);
-    test.setOrigin(100.f, 100.f);
-    test.setPosition(200,200);
-    test.setRotation(180);*/
 
     // initialize window
     sf::RenderWindow window = sf::RenderWindow(
@@ -63,17 +58,17 @@ int main() {
       }
 
       window.clear(sf::Color::Black);
+
       // draw triangles
       for (long unsigned int i = 0; i != flock.size(); i++) {
         triangles[i].setRotation(
-            (static_cast<float>(flock[i].orientation()) + (pi / 2)) * 360 /
-            (2 * pi));
+            static_cast<float>((flock[i].orientation()) * 360 /
+            (2 * M_PI)));
         triangles[i].setPosition(static_cast<float>(flock[i].getPosX()),
                                  static_cast<float>(flock[i].getPosY()));
         window.draw(triangles[i]);
       }
       flock.update_flock();
-      // window.draw(test);
 
       window.display();
     }

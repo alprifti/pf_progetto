@@ -53,7 +53,7 @@ std::array<double, 2> Boid::separation(std::vector<const Boid*> const& close) {
 
 std::array<double, 2> Boid::alignment(std::vector<const Boid*> const& close) {
   std::array<double, 2> sum{};
-  const double n{close.size()};
+  const long unsigned int n{close.size()};
 
   for (auto it = close.begin(); it != close.end(); it++) {
     sum = sum_arr(sum, this->velocity_diff_array(**it));
@@ -61,13 +61,13 @@ std::array<double, 2> Boid::alignment(std::vector<const Boid*> const& close) {
   if (n <= 1) {
     return {0.0, 0.0};
   }
-  const double num{1.0 / (n)};
+  const double num{1.0 / static_cast<double>(n)};
   return {Flock::a_ * num * sum[0], Flock::a_ * num * sum[1]};
 }
 
 std::array<double, 2> Boid::coesion(std::vector<const Boid*> const& close) {
   std::array<double, 2> sum{};
-  const double n{close.size()};
+  const long unsigned int n{close.size()};
 
   for (auto it = close.begin(); it != close.end(); it++) {
     sum = sum_arr(sum, (**it).pos_);
@@ -75,7 +75,7 @@ std::array<double, 2> Boid::coesion(std::vector<const Boid*> const& close) {
     sum[1] += pos_[1];*/
   }
 
-  const double num{1.0 / (n)};
+  const double num{1.0 / static_cast<double>(n)};
   sum[0] = (num * sum[0]);
   sum[1] = (num * sum[1]);
   return {Flock::c_ * (sum[0] - pos_[0]), Flock::c_ * (sum[1] - pos_[1])};
@@ -144,25 +144,21 @@ double Boid::getPosY() const { return pos_[1]; };
 
 void Boid::clamp_speed() {
   double velocity{std::sqrt(vel_[0] * vel_[0] + vel_[1] * vel_[1])};
-  if (velocity > Flock::max_speed_) {
-    double scale = Flock::max_speed_ / velocity;
-    vel_[0] *= scale;
-    vel_[1] *= scale;
-  } else if (velocity < Flock::min_speed_ && velocity > 0.0001) {
-    double scale = Flock::min_speed_ / velocity;
-    vel_[0] *= scale;
-    vel_[1] *= scale;
-  } /*else {
-    std::random_device rd;
-    std::default_random_engine eng(rd());
-    std::uniform_real_distribution<double> velocity_distribution(-30.0, 30.0);
-    vel_[0] = velocity_distribution(eng);
-    vel_[1] = velocity_distribution(eng);
-  };*/
-  // velocity = std::sqrt(vel_[0] * vel_[0] + vel_[1] * vel_[1]);
-  // std::cout << velocity << std::endl;
-  assert(std::sqrt(vel_[0] * vel_[0] + vel_[1] * vel_[1]) >
-         Flock::min_speed_ - 0.1);
+  if (velocity > 0.01) {
+    if (velocity > Flock::max_speed_) {
+      double scale = Flock::max_speed_ / velocity;
+      vel_[0] *= scale;
+      vel_[1] *= scale;
+    } else if (velocity < Flock::min_speed_) {
+      double scale = Flock::min_speed_ / velocity;
+      vel_[0] *= scale;
+      vel_[1] *= scale;
+    }
+  } else {
+    vel_[0] = Flock::min_speed_;
+  }
+  velocity =std::sqrt(vel_[0] * vel_[0] + vel_[1] * vel_[1]);
+  assert(velocity > Flock::min_speed_ - 0.1);
   assert(std::sqrt(vel_[0] * vel_[0] + vel_[1] * vel_[1]) <
          Flock::max_speed_ + 0.1);
 }
@@ -194,14 +190,15 @@ void Boid::wrap_borders() {
 //
 // Flock member functions
 
-double Flock::max_speed_{};
-double Flock::min_speed_{};
-double Flock::dist_{};
-double Flock::d_s_{};
-double Flock::s_{};
-double Flock::a_{};
-double Flock::c_{};
-double Flock::dt_{};
+
+double Flock::max_speed_{100.0};
+double Flock::min_speed_{40.0};
+double Flock::dist_{20.0};
+double Flock::d_s_{10.0};
+double Flock::s_{2.0};
+double Flock::a_{0.3};
+double Flock::c_{0.1};
+double Flock::dt_{0.05};
 
 Flock::Flock() : flock_{} {};
 

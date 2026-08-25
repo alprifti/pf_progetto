@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 #include "boids.hpp"
-#include <cmath> // Richiede C++20 per pi greco, oppure usa M_PI da <cmath>
+#include <cmath> 
 using namespace boids;
 
 TEST_CASE("Testing Boid orientation method") {
