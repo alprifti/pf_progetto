@@ -297,12 +297,12 @@ void Flock::flight_parameters(std::ifstream& is) {
   read_param(c_, "c_");
   read_param(dt_, "dt_");
 
-  if (max_speed_ > 500 || max_speed_ < 50) {
-    std::cout << "max_speed value error, should be [50,500]" << std::endl;
+  if (max_speed_ > 500 || max_speed_ < 100) {
+    std::cout << "max_speed value error, should be [100,500]" << std::endl;
     throw std::runtime_error{"Value out of range"};
   }
-  if (min_speed_ > 50 || min_speed_ < 10) {
-    std::cout << "min_speed value error, should be [10,50]" << std::endl;
+  if (min_speed_ > 99 || min_speed_ < 0) {
+    std::cout << "min_speed value error, should be [0,99]" << std::endl;
     throw std::runtime_error{"Value out of range"};
   }
   if (dist_ > 250 || dist_ < 10) {
