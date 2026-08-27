@@ -18,7 +18,12 @@ class Boid {
 
   double distance(Boid const&) const;
   double distance(std::array<double, 2> const& arr) const;
+
+  //return the distance between two boids, taking into account the torrus wrap
   double true_distance(Boid const& a) const;
+
+  //returns a Flock filled with the closest boids
+  Flock find_closest_boids(Flock const&, double) const;
 
   double velocity() const;
 
@@ -26,9 +31,9 @@ class Boid {
 
   std::array<double, 2> velocity_diff_array(Boid const&) const;
 
-  std::array<double, 2> separation(std::vector<const Boid*> const&);
-  std::array<double, 2> alignment(std::vector<const Boid*> const&);
-  std::array<double, 2> cohesion(std::vector<const Boid*> const&);
+  std::array<double, 2> separation(Flock const&);
+  std::array<double, 2> alignment(Flock const&);
+  std::array<double, 2> cohesion(Flock const&);
 
   void clamp_speed();
 
@@ -42,8 +47,8 @@ class Boid {
   Boid();
 
   double orientation() const;
-  double getPosX() const;
-  double getPosY() const;
+  double get_pos_x() const;
+  double get_pos_y() const;
 };
 
 class Flock {

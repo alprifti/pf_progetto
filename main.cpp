@@ -85,8 +85,8 @@ int main() {
       for (long unsigned int i = 0; i != flock.size(); i++) {
         triangles[i].setRotation(
             static_cast<float>((flock[i].orientation()) * 180.0 /  M_PI+90.f));
-        triangles[i].setPosition(static_cast<float>(flock[i].getPosX()),
-                                 static_cast<float>(flock[i].getPosY()));
+        triangles[i].setPosition(static_cast<float>(flock[i].get_pos_x()),
+                                 static_cast<float>(flock[i].get_pos_y()));
         window.draw(triangles[i]);
       }
       flock.update_flock();

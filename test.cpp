@@ -39,12 +39,12 @@ TEST_CASE("Testing Boid orientation method") {
     }
 }
 
-TEST_CASE("Testing Boid position getters (getPosX and getPosY)") {
+TEST_CASE("Testing Boid position getters (get_pos_x and get_pos_y)") {
     
     SUBCASE("Default constructor sets position to origin (0, 0)") {
         boids::Boid b;
-        CHECK(b.getPosX() == doctest::Approx(0.0));
-        CHECK(b.getPosY() == doctest::Approx(0.0));
+        CHECK(b.get_pos_x() == doctest::Approx(0.0));
+        CHECK(b.get_pos_y() == doctest::Approx(0.0));
     }
 
     SUBCASE("Parameterized constructor with positive coordinates") {
@@ -52,8 +52,8 @@ TEST_CASE("Testing Boid position getters (getPosX and getPosY)") {
         double expected_y = 300.25;
         boids::Boid b({expected_x, expected_y}, {1.0, 1.0});
         
-        CHECK(b.getPosX() == doctest::Approx(expected_x));
-        CHECK(b.getPosY() == doctest::Approx(expected_y));
+        CHECK(b.get_pos_x() == doctest::Approx(expected_x));
+        CHECK(b.get_pos_y() == doctest::Approx(expected_y));
     }
 
     SUBCASE("Parameterized constructor with negative coordinates (before border wrapping)") {
@@ -61,19 +61,19 @@ TEST_CASE("Testing Boid position getters (getPosX and getPosY)") {
         double expected_y = -120.4;
         boids::Boid b({expected_x, expected_y}, {0.0, 0.0});
         
-        CHECK(b.getPosX() == doctest::Approx(expected_x));
-        CHECK(b.getPosY() == doctest::Approx(expected_y));
+        CHECK(b.get_pos_x() == doctest::Approx(expected_x));
+        CHECK(b.get_pos_y() == doctest::Approx(expected_y));
     }
 
     SUBCASE("Checking X and Y independently") {
         // Creiamo un boid con X e Y volutamente diverse per evitare confusioni di coordinate
         boids::Boid b({750.12, 12.34}, {0.0, 0.0});
         
-        CHECK(b.getPosX() == doctest::Approx(750.12));
-        // Verifichiamo che getPosX non restituisca per errore la Y
-        CHECK(b.getPosX() != doctest::Approx(b.getPosY()));
+        CHECK(b.get_pos_x() == doctest::Approx(750.12));
+        // Verifichiamo che get_pos_x non restituisca per errore la Y
+        CHECK(b.get_pos_x() != doctest::Approx(b.get_pos_y()));
         
-        CHECK(b.getPosY() == doctest::Approx(12.34));
+        CHECK(b.get_pos_y() == doctest::Approx(12.34));
     }
 }
 
@@ -132,8 +132,8 @@ TEST_CASE("Testing Flock push_back method") {
         flock.push_back(default_boid);
 
         CHECK(flock.size() == 1);
-        CHECK(flock[0].getPosX() == doctest::Approx(0.0));
-        CHECK(flock[0].getPosY() == doctest::Approx(0.0));
+        CHECK(flock[0].get_pos_x() == doctest::Approx(0.0));
+        CHECK(flock[0].get_pos_y() == doctest::Approx(0.0));
     }
 
     SUBCASE("Pushing back a custom boid preserves its position and velocity properties") {
@@ -147,8 +147,8 @@ TEST_CASE("Testing Flock push_back method") {
         flock.push_back(custom_boid);
 
         CHECK(flock.size() == 1);
-        CHECK(flock[0].getPosX() == doctest::Approx(custom_pos[0]));
-        CHECK(flock[0].getPosY() == doctest::Approx(custom_pos[1]));
+        CHECK(flock[0].get_pos_x() == doctest::Approx(custom_pos[0]));
+        CHECK(flock[0].get_pos_y() == doctest::Approx(custom_pos[1]));
         
         // Verificiamo anche l'orientamento calcolato dalla velocità inserita
         double expected_orientation = std::atan2(custom_vel[1], custom_vel[0]);
@@ -169,9 +169,9 @@ TEST_CASE("Testing Flock push_back method") {
         CHECK(flock.size() == 3);
 
         // Verifichiamo che l'ordine sia rispettato (FIFO - First In, First Out)
-        CHECK(flock[0].getPosX() == doctest::Approx(10.0));
-        CHECK(flock[1].getPosX() == doctest::Approx(20.0));
-        CHECK(flock[2].getPosX() == doctest::Approx(30.0));
+        CHECK(flock[0].get_pos_x() == doctest::Approx(10.0));
+        CHECK(flock[1].get_pos_x() == doctest::Approx(20.0));
+        CHECK(flock[2].get_pos_x() == doctest::Approx(30.0));
     }
 }
 
@@ -203,8 +203,8 @@ TEST_CASE("Testing Flock begin and end iterators") {
         // Il range-based for in C++ sfrutta implicitamente begin() ed end()
         for (auto const& boid : flock) {
             // Controlliamo che ogni boid iterato abbia una posizione valida
-            CHECK(boid.getPosX() >= 0.0);
-            CHECK(boid.getPosX() <= 800.0);
+            CHECK(boid.get_pos_x() >= 0.0);
+            CHECK(boid.get_pos_x() <= 800.0);
             counted_boids++;
         }
 
@@ -256,8 +256,8 @@ TEST_CASE("Testing Flock update_flock method without streams") {
         flock.update_flock();
 
         // Verifichiamo che la posizione sia cambiata (il boid si è mosso)
-        double new_x = flock[0].getPosX();
-        double new_y = flock[0].getPosY();
+        double new_x = flock[0].get_pos_x();
+        double new_y = flock[0].get_pos_y();
 
         bool has_moved = (new_x != start_x) || (new_y != start_y);
         CHECK(has_moved);

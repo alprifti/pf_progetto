@@ -20,23 +20,40 @@ std::array<double, 2> Boid::sum_arr(std::array<double, 2> const& add1,
 }
 
 double Boid::true_distance(Boid const& a) const {
-  auto check_min_dist = [&](double width, double height, double current_min) {
-    double distance{this->distance({a.pos_[0] + width, a.pos_[1] + height})};
-    current_min = std::min(distance, current_min);
-    assert(current_min <= distance);
-    return current_min;
-  };
+  double dx{std::abs(pos_[0] - a.pos_[0])};
+  double dy{std::abs(pos_[1] - a.pos_[1])};
+  if (dx > 400) {
+    dx = 800 - dx;
+  }
+  if (dy > 300) {
+    dy = 600 - dy;
+  }
+  return {std::sqrt((dx * dx) + (dy * dy))};
+}
 
-  double min_dist{this->distance(a)};
-  min_dist = check_min_dist(-800, -600, min_dist);
-  min_dist = check_min_dist(-800, +600, min_dist);
-  min_dist = check_min_dist(800, -600, min_dist);
-  min_dist = check_min_dist(800, 600, min_dist);
-  min_dist = check_min_dist(-800, 0, min_dist);
-  min_dist = check_min_dist(0, -600, min_dist);
-  min_dist = check_min_dist(+800, 0, min_dist);
-  min_dist = check_min_dist(0, +600, min_dist);
-  return min_dist;
+Flock Boid::find_closest_boids(Flock const& flock, double distance) const {
+  Flock closest{};
+  for (auto b : flock.flock_) {
+    if (this->true_distance(b) < distance) {
+      if (this->pos_ == b.pos_) continue;
+      double dx{pos_[0] - b.pos_[0]};
+      double dy{pos_[1] - b.pos_[1]};
+
+      if (dx > 400) {
+        b.pos_[0] += 800;
+      } else if (dx < -400) {
+        b.pos_[0] -= 800;
+      }
+
+      if (dy > 300) {
+        b.pos_[1] += 600;
+      } else if (dy < -300) {
+        b.pos_[1] -= 600;
+      }
+      closest.push_back(b);
+    }
+  }
+  return closest;
 }
 
 double Boid::distance(Boid const& a) const {
@@ -61,11 +78,11 @@ std::array<double, 2> Boid::velocity_diff_array(Boid const& a) const {
   return std::array<double, 2>{a.vel_[0] - vel_[0], a.vel_[1] - vel_[1]};
 }
 
-std::array<double, 2> Boid::separation(std::vector<const Boid*> const& close) {
+std::array<double, 2> Boid::separation(Flock const& close) {
   std::array<double, 2> sum{};
   std::array<double, 2> distance_array{};
   for (auto it = close.begin(); it != close.end(); it++) {
-    distance_array = this->distance_diff_array(**it);
+    distance_array = this->distance_diff_array(*it);
     /*double distance {std::sqrt(this->distance(distance_array))};
     double factor {10.0/(distance+0.5)+1.0};
     distance_array[0]*= factor;
@@ -75,7 +92,7 @@ std::array<double, 2> Boid::separation(std::vector<const Boid*> const& close) {
   return {-Flock::s_ * sum[0], -Flock::s_ * sum[1]};
 }
 
-std::array<double, 2> Boid::alignment(std::vector<const Boid*> const& close) {
+std::array<double, 2> Boid::alignment(Flock const& close) {
   std::array<double, 2> sum{};
   const long unsigned int n{close.size()};
   if (n == 0) {
@@ -83,13 +100,13 @@ std::array<double, 2> Boid::alignment(std::vector<const Boid*> const& close) {
   }
 
   for (auto it = close.begin(); it != close.end(); it++) {
-    sum = sum_arr(sum, this->velocity_diff_array(**it));
+    sum = sum_arr(sum, this->velocity_diff_array(*it));
   }
   const double num{1.0 / static_cast<double>(n)};
   return {Flock::a_ * num * sum[0], Flock::a_ * num * sum[1]};
 }
 
-std::array<double, 2> Boid::cohesion(std::vector<const Boid*> const& close) {
+std::array<double, 2> Boid::cohesion(Flock const& close) {
   std::array<double, 2> sum{};
   const long unsigned int n{close.size()};
   if (n == 0) {
@@ -97,7 +114,7 @@ std::array<double, 2> Boid::cohesion(std::vector<const Boid*> const& close) {
   }
 
   for (auto it = close.begin(); it != close.end(); it++) {
-    sum = sum_arr(sum, (**it).pos_);
+    sum = sum_arr(sum, (*it).pos_);
   }
 
   const double num{1.0 / static_cast<double>(n)};
@@ -114,10 +131,13 @@ Boid::Boid()
 
 // Updates the state of a boid based on those near it
 Boid Boid::update_boid(Flock const& flock) {
-  std::vector<const Boid*> near{};
-  std::vector<const Boid*> separation{};
+  Flock near{};
+  Flock separation{};
 
-  for (long unsigned int it = 0; it != flock.size(); it++) {
+  near = this->find_closest_boids(flock, Flock::dist_);
+  separation = this->find_closest_boids(near, Flock::d_s_);
+
+  /*for (long unsigned int it = 0; it != flock.size(); it++) {
     double distance{this->distance(flock[it])};
     if (this != &flock[it] && distance <= Flock::dist_) {
       near.push_back(&flock[it]);
@@ -125,7 +145,8 @@ Boid Boid::update_boid(Flock const& flock) {
         separation.push_back(&flock[it]);
       }
     }
-  }
+  }*/
+
   if (near.size() == 0) {
     if (pos_[0] > 0 && pos_[1] > 0 && pos_[0] < 800 && pos_[1] < 600) {
       return Boid{
@@ -164,8 +185,8 @@ double Boid::orientation() const {
   return std::atan2(vel_[1], vel_[0]);
 };
 
-double Boid::getPosX() const { return pos_[0]; };
-double Boid::getPosY() const { return pos_[1]; };
+double Boid::get_pos_x() const { return pos_[0]; };
+double Boid::get_pos_y() const { return pos_[1]; };
 
 void Boid::clamp_speed() {
   double velocity{std::sqrt(vel_[0] * vel_[0] + vel_[1] * vel_[1])};
@@ -247,10 +268,6 @@ void Flock::update_flock() {
   std::transform(flock_.begin(), flock_.end(), updated.flock_.begin(),
                  [this](Boid& b) { return b.update_boid(*this); });
 
-  /*for (long unsigned int i = 0; i != flock_.size(); i++) {
-    updated.flock_.push_back(flock_[i].update_boid(*this));
-  }*/
-
   for (long unsigned int i = 0; i != flock_.size(); i++) {
     flock_[i] = updated[i];
   }
@@ -263,6 +280,7 @@ void Flock::push_back(Boid a) { flock_.push_back(a); }
 
 void Flock::init(long unsigned int n) {
   flock_.clear();
+  flock_.reserve(n);
 
   std::random_device rd;
   std::default_random_engine eng(rd());
@@ -385,8 +403,8 @@ std::array<double, 4> Flock::flock_statistics() const {
   double velocity_variance_sum = 0.0;
   long unsigned int n_int{flock_.size()};
 
-  // calculates the standard deviation of distanca and speed
-  for (std::size_t i = 0; i < n_int; ++i) {
+  // calculates the standard deviation of distance and speed
+  for (long unsigned int i = 0; i < n_int; ++i) {
     double diff_dist = mean_distance_vector[i] - mean_distance;
     distance_variance_sum += diff_dist * diff_dist;
 

@@ -1,2 +1,1 @@
-ciao mondo
-(pusher)
+Progetto di simulazione di uno stormo di uccelli
