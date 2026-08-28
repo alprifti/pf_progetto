@@ -1,3 +1,3 @@
 100.0 .0 100.0 30.0 2.0 0.3 0.2 0.02
 
-maxSpeed;   minSpeed;   dist;   d_s; separation; alignment;  coesion;    dt
+maxSpeed [100,500];   minSpeed [0,99];    dist [10,250];   d_s [1,100]; separation [0,10]; alignment [0,10];  coesion [0,10];    dt (0,0.1]

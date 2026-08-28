@@ -24,46 +24,39 @@ double Boid::true_distance(Boid const& a) const {
   double dy{std::abs(pos_[1] - a.pos_[1])};
   if (dx > 400) {
     dx = 800 - dx;
+    assert(dx<400);
   }
   if (dy > 300) {
     dy = 600 - dy;
+    assert(dy<300);
   }
   return {std::sqrt((dx * dx) + (dy * dy))};
 }
 
 Flock Boid::find_closest_boids(Flock const& flock, double distance) const {
   Flock closest{};
-  for (auto b : flock.flock_) {
+  for (const Boid& b : flock.flock_) {
+  if (this->pos_ == b.pos_) continue;
     if (this->true_distance(b) < distance) {
-      if (this->pos_ == b.pos_) continue;
-      double dx{pos_[0] - b.pos_[0]};
-      double dy{pos_[1] - b.pos_[1]};
+      Boid other{b};
+      double dx{pos_[0] - other.pos_[0]};
+      double dy{pos_[1] - other.pos_[1]};
 
       if (dx > 400) {
-        b.pos_[0] += 800;
+        other.pos_[0] += 800;
       } else if (dx < -400) {
-        b.pos_[0] -= 800;
+        other.pos_[0] -= 800;
       }
 
       if (dy > 300) {
-        b.pos_[1] += 600;
+        other.pos_[1] += 600;
       } else if (dy < -300) {
-        b.pos_[1] -= 600;
+        other.pos_[1] -= 600;
       }
-      closest.push_back(b);
+      closest.push_back(other);
     }
   }
   return closest;
-}
-
-double Boid::distance(Boid const& a) const {
-  return {std::sqrt((pos_[0] - a.pos_[0]) * (pos_[0] - a.pos_[0]) +
-                    (pos_[1] - a.pos_[1]) * (pos_[1] - a.pos_[1]))};
-}
-
-double Boid::distance(std::array<double, 2> const& arr) const {
-  return {std::sqrt((pos_[0] - arr[0]) * (pos_[0] - arr[0]) +
-                    (pos_[1] - arr[1]) * (pos_[1] - arr[1]))};
 }
 
 double Boid::velocity() const {
@@ -83,10 +76,6 @@ std::array<double, 2> Boid::separation(Flock const& close) {
   std::array<double, 2> distance_array{};
   for (auto it = close.begin(); it != close.end(); it++) {
     distance_array = this->distance_diff_array(*it);
-    /*double distance {std::sqrt(this->distance(distance_array))};
-    double factor {10.0/(distance+0.5)+1.0};
-    distance_array[0]*= factor;
-    distance_array[1]*= factor;*/
     sum = sum_arr(sum, distance_array);
   }
   return {-Flock::s_ * sum[0], -Flock::s_ * sum[1]};
@@ -129,7 +118,7 @@ Boid::Boid(std::array<double, 2> pos, std::array<double, 2> vel)
 Boid::Boid()
     : Boid(std::array<double, 2>{0., 0.}, std::array<double, 2>{0., 0.}) {};
 
-// Updates the state of a boid based on those near it
+// returns an updated boid based on those near it
 Boid Boid::update_boid(Flock const& flock) {
   Flock near{};
   Flock separation{};
@@ -137,44 +126,35 @@ Boid Boid::update_boid(Flock const& flock) {
   near = this->find_closest_boids(flock, Flock::dist_);
   separation = this->find_closest_boids(near, Flock::d_s_);
 
-  /*for (long unsigned int it = 0; it != flock.size(); it++) {
-    double distance{this->distance(flock[it])};
-    if (this != &flock[it] && distance <= Flock::dist_) {
-      near.push_back(&flock[it]);
-      if (distance <= Flock::d_s_) {
-        separation.push_back(&flock[it]);
-      }
-    }
-  }*/
+  Boid return_boid{*this};
+  return_boid.clamp_speed();
+  return_boid.pos_[0] = pos_[0] + vel_[0] * Flock::dt_;
+  return_boid.pos_[1] = pos_[1] + vel_[1] * Flock::dt_;
 
   if (near.size() == 0) {
-    if (pos_[0] > 0 && pos_[1] > 0 && pos_[0] < 800 && pos_[1] < 600) {
-      return Boid{
-          {pos_[0] + vel_[0] * Flock::dt_, pos_[1] + vel_[1] * Flock::dt_},
-          {vel_[0], vel_[1]}};
+    if (return_boid.pos_[0] >= 0 && return_boid.pos_[1] >= 0 &&
+        return_boid.pos_[0] <= 800 && return_boid.pos_[1] <= 600) {
+      return return_boid;
     } else {
-      this->wrap_borders();
-      return Boid{
-          {pos_[0] + vel_[0] * Flock::dt_, pos_[1] + vel_[1] * Flock::dt_},
-          {vel_[0], vel_[1]}};
+      return_boid.wrap_borders();
+      return return_boid;
     }
   }
   std::array<double, 2> new_vel1{this->separation(separation)};
   std::array<double, 2> new_vel2{this->alignment(near)};
   std::array<double, 2> new_vel3{this->cohesion(near)};
-  vel_[0] = vel_[0] + new_vel1[0] + new_vel2[0] + new_vel3[0];
-  vel_[1] = vel_[1] + new_vel1[1] + new_vel2[1] + new_vel3[1];
+  return_boid.vel_[0] += new_vel1[0] + new_vel2[0] + new_vel3[0];
+  return_boid.vel_[1] += new_vel1[1] + new_vel2[1] + new_vel3[1];
 
-  this->clamp_speed();
-  if (pos_[0] > 0 && pos_[1] > 0 && pos_[0] < 800 && pos_[1] < 600) {
-    return Boid{
-        {pos_[0] + vel_[0] * Flock::dt_, pos_[1] + vel_[1] * Flock::dt_},
-        {vel_[0], vel_[1]}};
+  return_boid.pos_[0] = pos_[0] + return_boid.vel_[0] * Flock::dt_;
+  return_boid.pos_[1] = pos_[1] + return_boid.vel_[1] * Flock::dt_;
+
+  if (return_boid.pos_[0] >= 0 && return_boid.pos_[1] >= 0 &&
+      return_boid.pos_[0] <= 800 && return_boid.pos_[1] <= 600) {
+    return return_boid;
   } else {
-    this->wrap_borders();
-    return Boid{
-        {pos_[0] + vel_[0] * Flock::dt_, pos_[1] + vel_[1] * Flock::dt_},
-        {vel_[0], vel_[1]}};
+    return_boid.wrap_borders();
+    return return_boid;
   }
 }
 
@@ -206,8 +186,10 @@ void Boid::clamp_speed() {
     std::uniform_real_distribution<double> velocity_distribution(
         Flock::min_speed_, Flock::max_speed_);
     std::uniform_real_distribution<double> orientation(0.0, 2.0 * M_PI);
-    vel_[0] = velocity_distribution(eng) * std::cos(orientation(eng));
-    vel_[1] = velocity_distribution(eng) * std::sin(orientation(eng));
+    double speed{velocity_distribution(eng)};
+    double angle{orientation(eng)};
+    vel_[0] = speed * std::cos(angle);
+    vel_[1] = speed * std::sin(angle);
   }
   assert(std::sqrt(vel_[0] * vel_[0] + vel_[1] * vel_[1]) >
          Flock::min_speed_ - 0.1);
@@ -237,6 +219,8 @@ void Boid::wrap_borders() {
   } else if (pos_[1] > 600) {
     pos_[1] -= 600;
   }
+  assert(pos_[0] > 0 && pos_[0] < 800.0);
+  assert(pos_[1] > 0 && pos_[1] < 600.0);
 }
 
 //
@@ -251,13 +235,14 @@ double Flock::a_{0.3};
 double Flock::c_{0.1};
 double Flock::dt_{0.05};
 
-Flock::Flock() : flock_{} {};
+Flock::Flock() : flock_{} {}
 
 Flock::Flock(long unsigned int dim) {
+  flock_.reserve(dim);
   for (long unsigned int i = 0; i < dim; i++) {
     flock_.push_back(Boid{});
   }
-};
+}
 
 const Boid& Flock::operator[](long unsigned int i) const { return flock_[i]; }
 
@@ -275,7 +260,6 @@ void Flock::update_flock() {
 
 long unsigned int Flock::size() const { return flock_.size(); }
 
-// Appends one boid to the flock vector
 void Flock::push_back(Boid a) { flock_.push_back(a); }
 
 void Flock::init(long unsigned int n) {
@@ -289,16 +273,20 @@ void Flock::init(long unsigned int n) {
   std::uniform_real_distribution<double> velocity_distribution(
       Flock::min_speed_, Flock::max_speed_);
   std::uniform_real_distribution<double> orientation(0.0, 2.0 * M_PI);
+
+  //filling flock_with randomly generated boids
   for (long unsigned int i = 0; i != n; i++) {
-    flock_.push_back(
-        Boid{{x_distribution(eng), y_distribution(eng)},
-             {velocity_distribution(eng) * std::cos(orientation(eng)),
-              velocity_distribution(eng) * std::sin(orientation(eng))}});
-    flock_[i].clamp_speed();
+    double speed{velocity_distribution(eng)};
+    double angle{orientation(eng)};
+    flock_.push_back(Boid{{x_distribution(eng), y_distribution(eng)},
+                          {speed * std::cos(angle), speed * std::sin(angle)}});
+    assert(flock_[i].velocity() > Flock::min_speed_ &&
+           flock_[i].velocity() < Flock::max_speed_);
   }
 }
 
 void Flock::flight_parameters(std::ifstream& is) {
+  // lambda used to read parameters without reusing the same code
   auto read_param = [&](double& param, const char* name) {
     if (!(is >> param)) {
       throw std::runtime_error{
@@ -315,6 +303,7 @@ void Flock::flight_parameters(std::ifstream& is) {
   read_param(c_, "c_");
   read_param(dt_, "dt_");
 
+  // checks if input values are in range
   if (max_speed_ > 500 || max_speed_ < 100) {
     std::cout << "max_speed value error, should be [100,500]" << std::endl;
     throw std::runtime_error{"Value out of range"};
@@ -348,14 +337,6 @@ void Flock::flight_parameters(std::ifstream& is) {
     std::cout << "dt_value error, should be (0,0.1] " << std::endl;
     throw std::runtime_error{"Value out of range"};
   }
-  /*std::cout << max_speed_ << std::endl
-            << min_speed_ << std::endl
-            << dist_ << std::endl
-            << d_s_ << std::endl
-            << s_ << std::endl
-            << a_ << std::endl
-            << c_ << std::endl
-            << dt_ << std::endl;*/
 }
 
 std::vector<Boid>::const_iterator Flock::begin() const {
@@ -372,7 +353,16 @@ std::array<double, 4> Flock::flock_statistics() const {
   std::vector<double> velocity_vector{};
   double mean_velocity{};
   std::vector<double> square_deviation{};
-  double n{static_cast<double>(flock_.size())};
+
+  long unsigned int n_int{flock_.size()};
+  double n{static_cast<double>(n_int)};
+
+  mean_distance_vector.reserve(n_int);
+  velocity_vector.reserve(n_int);
+
+  if (n <= 1) {
+    return {0.0, 0.0, 0.0, 0.0};
+  }
 
   // calculates the mean_distance and mean_velocity
   for (const Boid& i : flock_) {
@@ -401,7 +391,6 @@ std::array<double, 4> Flock::flock_statistics() const {
 
   double distance_variance_sum = 0.0;
   double velocity_variance_sum = 0.0;
-  long unsigned int n_int{flock_.size()};
 
   // calculates the standard deviation of distance and speed
   for (long unsigned int i = 0; i < n_int; ++i) {
